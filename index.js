@@ -11,10 +11,10 @@ console.log(yargs.argv);
 
 const currentPath = process.cwd();
 
-function createPackageJson(currentPath}) {
+function createPackageJson(currentPath) {
   const storeUrl = readline.question("Enter store myshopify url: ");
   console.log(storeUrl);
-  
+
   let packageJson;
   try {
     packageJson = require(path.join(currentPath, 'package.json'));
