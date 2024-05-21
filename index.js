@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const yargs = require("yargs");
 const packageJson = require('./package.json');
 
+console.log('process.argv', process.argv);
 console.log(yargs.argv);
 
 const {storeUrl} = yargs.argv;
