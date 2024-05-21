@@ -8,6 +8,7 @@ const packageJson = require('./package.json');
 console.log('process.argv', process.argv);
 console.log(yargs.argv);
 
+const currentPath = process.cwd();
 const {storeUrl} = yargs.argv;
 
 packageJson.scripts = {
@@ -18,7 +19,7 @@ packageJson.scripts = {
 packageJson.name = storeUrl;
 console.log("Current directory:", (path.resolve(__dirname, 'package2.json')));
 
-const resolvedFileName = path.resolve(__dirname, 'package2.json');
+const resolvedFileName = path.join(currentPath, 'package2.json');
 
 fs.writeFile(resolvedFileName, JSON.stringify(packageJson, null, 2), err => {
   if (err) {
