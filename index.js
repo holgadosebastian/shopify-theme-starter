@@ -35,7 +35,7 @@ async function createPackageJson(currentPath) {
 
 async function main() {
   try {
-    createPackageJson(currentPath)
+    await createPackageJson(currentPath)
   } catch (error) {
     console.log('error')
     process.exit(1);
