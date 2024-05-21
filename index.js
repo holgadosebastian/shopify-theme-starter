@@ -10,26 +10,22 @@ console.log(yargs.argv);
 
 const currentPath = process.cwd();
 
-function createPackageJson(currentPath) {
-  const {storeUrl} = yargs.argv;
-
+function createPackageJson(currentPath, { storeUrl }) {
   let packageJson;
   try {
     packageJson = require(path.join(currentPath, 'package.json'));
   } catch (error) {
     console.log('package.json not found, creating one');
+    packageJson = {};
   } finally {
-    packageJson = {
-      name: storeUrl,
-      scripts: {
-        'theme:dev': `shopify dev --store=${storeUrl}`,
-        'theme:push': `shopify push --store=${storeUrl}`,
-      }
+    packageJson.name = storeUrl;
+    packageJson.scripts = {
+      'theme:dev': `shopify dev --store=${storeUrl}`,
+      'theme:push': `shopify push --store=${storeUrl}`,
     };
   }
   const resolvedFileName = path.join(currentPath, 'package2.json');
   
-
   console.log('packageJson', packageJson);
   
   fs.writeFile(resolvedFileName, JSON.stringify(packageJson, null, 2), err => {
@@ -44,7 +40,9 @@ function createPackageJson(currentPath) {
 
 function main() {
   try {
-    createPackageJson(currentPath);
+    const {storeUrl} = yargs.argv;
+    if (!storeUrl) throw Error('store url has not been defined, use --store-url={myshopify.com url}');
+    createPackageJson(currentPath, { storeUrl});
   } catch (error) {
     console.log('error', error);
     process.exit(1);
