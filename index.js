@@ -11,7 +11,7 @@ console.log(yargs.argv);
 const currentPath = process.cwd();
 
 try {
-  await createPackageJson(currentPath)
+  createPackageJson(currentPath)
 } catch (error) {
   console.log('error')
   process.exit(1);
