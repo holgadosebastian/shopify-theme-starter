@@ -5,6 +5,7 @@
   "license": "MIT",
   "bin": "./index.js",
   "dependencies": {
+    "readline-sync": "^1.4.10",
     "yargs": "^17.7.2"
   }
 }
