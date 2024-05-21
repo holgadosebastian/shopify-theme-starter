@@ -11,18 +11,26 @@ console.log(yargs.argv);
 const currentPath = process.cwd();
 
 function createPackageJson(currentPath) {
-  const packageJson = require(path.join(currentPath, 'package.json'));
-  const resolvedFileName = path.join(currentPath, 'package2.json');
   const {storeUrl} = yargs.argv;
 
-  console.log('packageJson', packageJson);
-
-  packageJson.scripts = {
-    'theme:dev': `shopify dev --store=${storeUrl}`,
-    'theme:push': `shopify push --store=${storeUrl}`,
-  };
+  let packageJson;
+  try {
+    packageJson = require(path.join(currentPath, 'package.json'));
+  } catch (error) {
+    console.log('package.json not found, creating one');
+  } finally {
+    packageJson = {
+      name: storeUrl,
+      scripts: {
+        'theme:dev': `shopify dev --store=${storeUrl}`,
+        'theme:push': `shopify push --store=${storeUrl}`,
+      }
+    };
+  }
+  const resolvedFileName = path.join(currentPath, 'package2.json');
   
-  packageJson.name = storeUrl;
+
+  console.log('packageJson', packageJson);
   
   fs.writeFile(resolvedFileName, JSON.stringify(packageJson, null, 2), err => {
     if (err) {
