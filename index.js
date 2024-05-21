@@ -10,8 +10,8 @@ console.log(yargs.argv);
 
 const currentPath = process.cwd();
 
-async function createPackageJson(currentPath) {
-  const packageJson = require(path.join(currentPath, 'package.json')) || {};
+function createPackageJson(currentPath) {
+  const packageJson = require(path.join(currentPath, 'package.json'));
   const resolvedFileName = path.join(currentPath, 'package2.json');
   const {storeUrl} = yargs.argv;
 
@@ -24,20 +24,21 @@ async function createPackageJson(currentPath) {
   
   packageJson.name = storeUrl;
   
-  await fs.writeFile(resolvedFileName, JSON.stringify(packageJson, null, 2), err => {
+  fs.writeFile(resolvedFileName, JSON.stringify(packageJson, null, 2), err => {
     if (err) {
       console.error(err);
+      throw new Error(err);
     } else {
       // file written successfully
     }
   });
 }
 
-async function main() {
+function main() {
   try {
-    await createPackageJson(currentPath)
+    createPackageJson(currentPath);
   } catch (error) {
-    console.log('error')
+    console.log('error', error);
     process.exit(1);
   }
 }
