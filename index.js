@@ -5,16 +5,14 @@ const fs = require('node:fs');
 const yargs = require("yargs");
 const { execSync } = require('child_process');
 const readline = require('readline-sync'); 
+const { cpSync } = require('fs');
 
 console.log('process.argv', process.argv);
 console.log(yargs.argv);
 
 const currentPath = process.cwd();
 
-function createPackageJson(currentPath) {
-  const storeUrl = readline.question("Enter store myshopify url: ");
-  console.log(storeUrl);
-
+function createPackageJson(currentPath, { storeUrl}) {
   let packageJson;
   try {
     packageJson = require(path.join(currentPath, 'package.json'));
@@ -42,11 +40,34 @@ function createPackageJson(currentPath) {
   });
 }
 
+async function copyFilesAndDirectories(callback) {
+  try {
+    const sourceDir = path.join(__dirname, 'templates', 'default');
+    console.log('sourceDir', sourceDir);
+    // Copy a directory recursively
+    cpSync(sourceDir, currentPath, { recursive: true });
+    console.log('sourceDir was copied to destinationDir');
+
+    // If everything goes well, call the callback with no error
+    callback(null);
+  } catch (err) {
+    // If there is an error, call the callback with the error
+    callback(err);
+  }
+}
+
 function main() {
   try {
-    const {storeUrl} = yargs.argv;
-    if (!storeUrl) throw Error('store url has not been defined, use --store-url={myshopify.com url}');
-    createPackageJson(currentPath, { storeUrl});
+    const storeUrl = readline.question("Enter store myshopify url: ");
+
+    createPackageJson(currentPath, { storeUrl });
+    copyFilesAndDirectories(err => {
+      if (err) {
+        console.error('Error:', err.message);
+      } else {
+        console.log('All files and directory copied successfully');
+      }
+    });
   } catch (error) {
     console.error(error);
     process.exit(1);
